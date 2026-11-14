@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ config.title }} · Akash Garments{% endblock %}
+{% block breadcrumb %}{{ config.title }}{% endblock %}
+{% block content %}
+<div class="page-heading page-heading-compact">
+  <div><p class="eyebrow">OPERATIONS / {{ page_key|replace('-', ' ')|upper }}</p><h1>{{ config.title }}</h1><p class="page-subtitle">{{ config.description }}</p></div>
+  {% if page_key == 'orders' %}<a class="primary-button" href="#new-order">＋ <span>New order</span></a>{% endif %}
+</div>
+<div class="table-toolbar">
+  <form method="get" action="{{ url_for('page', page=page_key) }}" class="filter-form">
+    <label class="search-box"><span aria-hidden="true">⌕</span><input type="search" name="q" value="{{ search }}" placeholder="Search {{ config.title|lower }}" aria-label="Search {{ config.title }}"></label>
+    {% for key in config.filters %}<label class="filter-select"><span class="sr-only">Filter by {{ key }}</span><select name="{{ key }}"><option value="All">All {{ key|replace('_', ' ')|title }}</option>{% for option in filter_options[key] %}<option value="{{ option }}" {% if selected_filters[key] == option %}selected{% endif %}>{{ option }}</option>{% endfor %}</select></label>{% endfor %}
+    <button class="secondary-button" type="submit">Apply filters</button>
+    {% if search or selected_filters.values()|select('ne', 'All')|list %}<a class="clear-link" href="{{ url_for('page', page=page_key) }}">Clear</a>{% endif %}
+  </form>
+  <span class="result-count"><strong>{{ rows|length }}</strong> of {{ total }} records</span>
+</div>
+{% if page_key == 'orders' %}
+<details class="create-panel" id="new-order"><summary>Create an order</summary><form method="post" class="create-form">
+  <input type="hidden" name="action" value="create">
+  <label>Customer<input name="customer" required placeholder="Customer name"></label>
+  <label>Product<input name="product" required placeholder="Garment or product"></label>
+  <label>Quantity<input name="quantity" type="number" min="1" required placeholder="0"></label>
+  <label>Unit price (₹)<input name="unit_price" type="number" min="0" step="0.01" placeholder="0"></label>
+  <label>Priority<select name="priority"><option>Medium</option><option>Low</option><option>High</option><option>Critical</option></select></label>
+  <label>Deadline<input name="deadline" type="date"></label>
+  <button class="primary-button" type="submit">Save order</button>
+</form></details>
+{% endif %}
+<section class="table-panel">
+  <div class="table-scroll"><table><thead><tr>{% for key, label in config.columns %}<th>{{ label }}</th>{% endfor %}{% if page_key == 'orders' %}<th><span class="sr-only">Actions</span></th>{% endif %}</tr></thead>
+    <tbody>
+    {% for row in rows %}<tr>
+      {% for key, label in config.columns %}<td class="{{ 'strong-cell' if loop.first else '' }} {{ 'number-cell' if key in ['quantity', 'value', 'inspected', 'defects', 'tasks'] else '' }}">
+        {% if key == 'value' %}₹{{ "{:,}".format(row[key]) }}{% elif key in ['quantity', 'inspected', 'defects', 'tasks'] and row[key] is number %}{{ "{:,}".format(row[key]) }}{% elif key == 'status' or key == 'priority' or key == 'severity' %}<span class="status status-{{ row[key]|lower|replace(' ', '-') }}">{{ row[key] }}</span>{% elif key == 'progress' %}<div class="table-progress"><span>{{ row[key] }}</span><span class="progress-track"><span style="width: {{ row[key] }}"></span></span></div>{% else %}{{ row.get(key, '—') }}{% endif %}
+      </td>{% endfor %}
+      {% if page_key == 'orders' %}<td><form method="post" class="inline-action"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="{{ row.id }}"><button class="icon-button" type="submit" title="Delete {{ row.number }}" aria-label="Delete {{ row.number }}">&#215;</button></form></td>{% endif %}
+    </tr>{% else %}<tr><td class="empty-row" colspan="{{ config.columns|length + (1 if page_key == 'orders' else 0) }}">No records match these filters.</td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+  <div class="table-foot"><span>Showing {{ rows|length }} records</span><span>Updated {{ today }}</span></div>
+</section>
+{% endblock %}

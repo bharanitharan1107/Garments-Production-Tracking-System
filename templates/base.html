@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f2f4f1">
+  <title>{% block title %}Akash Garments{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body class="app-body">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="{{ url_for('index') }}">
+        <span class="brand-mark">AG</span>
+        <span><strong>Akash Garments</strong><small>Production desk</small></span>
+      </a>
+      <div class="profile">
+        <span class="avatar">{{ current_user.avatar }}</span>
+        <span class="profile-copy"><strong>{{ current_user.name }}</strong><small>{{ current_user.role }}</small></span>
+      </div>
+      <nav class="navigation" aria-label="Main navigation">
+        <p class="nav-label">WORKSPACE</p>
+        {% for path, label, roles in nav_items %}
+          {% set active = (request.endpoint == 'dashboard' and path == 'dashboard') or (request.endpoint == 'reports' and path == 'reports') or (request.endpoint == 'page' and request.view_args and request.view_args.get('page') == path) %}
+          <a class="nav-link {{ 'active' if active else '' }}" href="{{ url_for('dashboard') if path == 'dashboard' else url_for('reports') if path == 'reports' else url_for('page', page=path) }}">
+            <span class="nav-symbol">{{ {'dashboard':'OV','orders':'OR','inventory':'IN','production':'PR','quality-control':'QC','shipping':'SH','workers':'WK','machines':'MC','reports':'RP','users':'US'}[path] }}</span>
+            <span>{{ label }}</span>
+            {% if path == 'orders' %}<span class="nav-count">12</span>{% endif %}
+          </a>
+        {% endfor %}
+      </nav>
+      <div class="sidebar-foot">
+        <span class="live-dot"></span><span>Factory systems online</span>
+        <form action="{{ url_for('logout') }}" method="post"><button class="logout-button" type="submit">Sign out</button></form>
+      </div>
+    </aside>
+    <main class="main-area">
+      <header class="topbar">
+        <div class="breadcrumbs"><span>Akash Garments</span><span class="crumb-separator">/</span><strong>{% block breadcrumb %}Dashboard{% endblock %}</strong></div>
+        <div class="topbar-meta"><span class="today-label">Factory operations</span><span class="topbar-avatar">{{ current_user.avatar }}</span></div>
+      </header>
+      <section class="content-area">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}<div class="flash-stack">{% for category, message in messages %}<p class="flash {{ category }}">{{ message }}</p>{% endfor %}</div>{% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+      </section>
+      <footer class="page-footer"><span>AKASH GARMENTS</span><span>Production management</span></footer>
+    </main>
+  </div>
+</body>
+</html>

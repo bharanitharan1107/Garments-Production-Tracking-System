@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Akash Garments{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div><p class="eyebrow">SATURDAY, 14 NOVEMBER 2026 <span class="heading-dot"></span> DAY SHIFT</p><h1>Good morning, {{ current_user.name.split(' ')[0] }}.</h1><p class="page-subtitle">Here is the production floor at a glance.</p></div>
+  <a class="secondary-button" href="{{ url_for('reports') }}">View reports <span aria-hidden="true">&#8599;</span></a>
+</div>
+<div class="metric-grid">
+  {% for label, value, note in metrics %}<article class="metric-card"><div class="metric-top"><span>{{ label }}</span><span class="metric-index">0{{ loop.index }}</span></div><strong>{{ value }}</strong><small>{{ note }}</small></article>{% endfor %}
+</div>
+<div class="dashboard-grid">
+  <section class="panel recent-orders">
+    <div class="panel-heading"><div><p class="eyebrow">CUSTOMER PIPELINE</p><h2>Recent orders</h2></div><a href="{{ url_for('page', page='orders') }}" class="text-link">All orders <span aria-hidden="true">&#8594;</span></a></div>
+    <div class="table-scroll"><table><thead><tr><th>ORDER</th><th>CUSTOMER</th><th>PRODUCT</th><th>STATUS</th><th>VALUE</th></tr></thead><tbody>
+      {% for order in orders %}<tr><td class="strong-cell">{{ order.number }}</td><td>{{ order.customer }}</td><td>{{ order.product }}</td><td><span class="status status-{{ order.status|lower|replace(' ', '-') }}">{{ order.status }}</span></td><td class="number-cell">₹{{ "{:,}".format(order.value) }}</td></tr>{% endfor %}
+    </tbody></table></div>
+  </section>
+  <section class="panel stock-panel">
+    <div class="panel-heading"><div><p class="eyebrow">MATERIALS</p><h2>Reorder attention</h2></div><a href="{{ url_for('page', page='inventory') }}" class="text-link">Inventory <span aria-hidden="true">&#8594;</span></a></div>
+    {% for item in low_stock %}<div class="stock-row"><span class="stock-mark">!</span><div><strong>{{ item.name }}</strong><small>{{ item.sku }} · Minimum {{ item.minimum }}</small></div><span class="status status-low-stock">Low</span></div>{% endfor %}
+    {% if not low_stock %}<p class="empty-state">Stock levels are healthy.</p>{% endif %}
+  </section>
+  <section class="panel production-panel">
+    <div class="panel-heading"><div><p class="eyebrow">ON THE FLOOR</p><h2>Production progress</h2></div><a href="{{ url_for('page', page='production') }}" class="text-link">Production <span aria-hidden="true">&#8594;</span></a></div>
+    <div class="production-list">
+      {% for line in production %}<div class="production-row"><div class="production-main"><strong>{{ line.product }}</strong><span>{{ line.order }} · {{ line.stage }}</span></div><div class="progress-track"><span style="width: {{ line.progress }}"></span></div><strong class="progress-label">{{ line.progress }}</strong></div>{% endfor %}
+    </div>
+  </section>
+  <aside class="floor-note"><p class="eyebrow">SHIFT NOTE <span>14 NOV</span></p><h2>Keep the floor moving.</h2><p>One machine is under maintenance and a fabric reorder needs attention before the next cutting run.</p><a href="{{ url_for('page', page='machines') }}">Open machine status <span aria-hidden="true">&#8594;</span></a></aside>
+</div>
+{% endblock %}

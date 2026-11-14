@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#172522">
+  <title>Sign in · Akash Garments</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body class="login-body">
+  <main class="login-layout">
+    <section class="login-story">
+      <a class="brand brand-light" href="{{ url_for('index') }}"><span class="brand-mark">AG</span><span><strong>Akash Garments</strong><small>Production desk</small></span></a>
+      <div class="story-copy">
+        <p class="eyebrow">FACTORY OPERATIONS · TIRUPUR</p>
+        <h1>Every stitch,<br><em>in sync.</em></h1>
+        <p class="story-lede">A clear view of orders, materials, production, quality, and delivery from one working floor.</p>
+        <div class="story-stats"><div><strong>08</strong><span>active lines</span></div><div><strong>12</strong><span>open orders</span></div><div><strong>94%</strong><span>quality pass</span></div></div>
+      </div>
+      <div class="story-bottom"><span class="live-dot"></span> Production systems ready <span class="story-date">SINCE 2020</span></div>
+    </section>
+    <section class="login-panel">
+      <div class="login-card">
+        <p class="eyebrow">TEAM ACCESS</p>
+        <h2>Welcome back</h2>
+        <p class="login-intro">Sign in to your production workspace.</p>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}<div class="flash-stack">{% for category, message in messages %}<p class="flash {{ category }}">{{ message }}</p>{% endfor %}</div>{% endif %}
+        {% endwith %}
+        <form method="post" action="{{ url_for('login') }}" class="login-form">
+          <label for="email">Email address</label>
+          <input id="email" name="email" type="email" autocomplete="username" placeholder="you@factory.com" required autofocus>
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+          <label class="remember-option"><input type="checkbox" name="remember"><span>Keep me signed in</span></label>
+          <button class="primary-button login-submit" type="submit">Sign in <span aria-hidden="true">&#8594;</span></button>
+        </form>
+        <div class="login-note"><span class="note-mark">i</span><span>Demo access: <strong>admin@akashgarments.com</strong><br>Password: <strong>admin123</strong></span></div>
+      </div>
+      <p class="login-copyright">AKASH GARMENTS <span>·</span> OPERATIONS PORTAL</p>
+    </section>
+  </main>
+</body>
+</html>

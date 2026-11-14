@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Reports & Analytics · Akash Garments{% endblock %}
+{% block breadcrumb %}Reports & Analytics{% endblock %}
+{% block content %}
+<div class="page-heading page-heading-compact"><div><p class="eyebrow">OPERATIONS / PERFORMANCE</p><h1>Reports & Analytics</h1><p class="page-subtitle">Production output against plan across the last seven months.</p></div><span class="report-period">SEP — MAR <span>2026</span></span></div>
+<div class="report-grid">
+  <section class="panel chart-panel"><div class="panel-heading"><div><p class="eyebrow">PRODUCTION</p><h2>Monthly units</h2></div><div class="chart-legend"><span><i></i> Actual</span><span><i></i> Target</span></div></div>
+    <div class="bar-chart" role="img" aria-label="Monthly production output compared to target">
+      {% for month, actual, target in monthly %}<div class="bar-group"><div class="bar-pair"><span class="bar actual-bar" style="height: {{ (actual / 25000 * 100)|round }}%" title="{{ actual }} units"></span><span class="bar target-bar" style="height: {{ (target / 25000 * 100)|round }}%" title="{{ target }} unit target"></span></div><span class="bar-label">{{ month }}</span></div>{% endfor %}
+    </div><div class="chart-scale"><span>25k</span><span>20k</span><span>15k</span><span>10k</span><span>5k</span><span>0</span></div>
+  </section>
+  <section class="panel department-panel"><div class="panel-heading"><div><p class="eyebrow">CAPACITY UTILIZATION</p><h2>Output by department</h2></div></div>
+    {% for name, output, capacity in departments %}<div class="department-row"><div><strong>{{ name }}</strong><span>{{ "{:,}".format(output) }} / {{ "{:,}".format(capacity) }} units</span></div><div class="progress-track"><span style="width: {{ (output / capacity * 100)|round }}%"></span></div><b>{{ (output / capacity * 100)|round|int }}%</b></div>{% endfor %}
+  </section>
+</div>
+<section class="report-summary"><p class="eyebrow">PERIOD SUMMARY</p><div class="summary-grid"><div><span>Total output this month</span><strong>16,200 <small>units</small></strong></div><div><span>Monthly target</span><strong>24,000 <small>units</small></strong></div><div><span>Target attainment</span><strong>67.5<small>%</small></strong></div><div><span>Capacity across departments</span><strong>41,000 <small>units</small></strong></div></div></section>
+{% endblock %}
