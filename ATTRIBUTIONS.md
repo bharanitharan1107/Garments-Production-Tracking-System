@@ -1,3 +1,3 @@
-This Figma Make file includes components from [shadcn/ui](https://ui.shadcn.com/) used under [MIT license](https://github.com/shadcn-ui/ui/blob/main/LICENSE.md).
+The Akash Garments application is adapted from the [original Figma design](https://www.figma.com/design/TTtCFzANhNdFPGIjApJnvv/Garment-Production-Tracking-System/).
 
-This Figma Make file includes photos from [Unsplash](https://unsplash.com) used under [license](https://unsplash.com/license).
+The interface uses DM Sans, DM Mono, and Manrope from [Google Fonts](https://fonts.google.com/). These font families are distributed under the [SIL Open Font License 1.1](https://openfontlicense.org/).
